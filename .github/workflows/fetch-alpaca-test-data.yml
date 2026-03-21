@@ -1,0 +1,68 @@
+name: Fetch Alpaca Test Data
+
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Number of calendar days to fetch back from yesterday (default: 1). Use e.g. 80 to backfill Jan & Feb 2026."
+        required: false
+        default: "1"
+      symbols:
+        description: "Comma-separated list of symbols to fetch (default: SPY,QQQ,MCD,KO,IBM,TSLA)"
+        required: false
+        default: "SPY,QQQ,MCD,KO,IBM,TSLA"
+  schedule:
+    # Daily at 06:00 UTC — after US markets have closed and daily bars are settled
+    - cron: "0 6 * * *"
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install alpaca-py pytz
+
+      - name: Fetch historical bars and snapshots
+        env:
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+          SYMBOLS: ${{ inputs.symbols || 'SPY,QQQ,MCD,KO,IBM,TSLA' }}
+        run: |
+          DAYS="${{ inputs.days }}"
+          python .github/script/fetch_alpaca_test_data.py --days "${DAYS:-1}"
+
+      - name: Upload test data as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpaca-test-data
+          path: |
+            data/alpaca/bars_daily.jsonl
+            data/alpaca/snapshots.jsonl
+          retention-days: 5
+
+      - name: Commit updated test data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/alpaca/bars_daily.jsonl data/alpaca/snapshots.jsonl
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: refresh Alpaca test data [skip ci]"
+            git push
+          fi

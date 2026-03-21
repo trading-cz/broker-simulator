@@ -1,0 +1,6 @@
+{"symbol":"QQQ","timestamp":"2024-10-02T09:03:58.995642Z","exchange":"K","price":479.95,"size":1.0,"id":292,"conditions":["@","F","T","I"],"tape":"C"}
+{"symbol":"QQQ","timestamp":"2024-10-02T09:04:00.601039Z","exchange":"P","price":479.99,"size":1.0,"id":518,"conditions":["@","T","I"],"tape":"C"}
+{"symbol":"QQQ","timestamp":"2024-10-02T09:04:04.435770Z","exchange":"Q","price":480.0,"size":50.0,"id":340,"conditions":["@","T","I"],"tape":"C"}
+{"symbol":"QQQ","timestamp":"2024-10-02T09:04:11.094119Z","exchange":"Q","price":479.93,"size":20.0,"id":341,"conditions":["@","T","I"],"tape":"C"}
+{"symbol":"QQQ","timestamp":"2024-10-02T09:04:17.295126Z","exchange":"P","price":480.0,"size":2.0,"id":519,"conditions":["@","T","I"],"tape":"C"}
+{"symbol":"GOOGL","timestamp":"2024-10-02T09:04:17.943564Z","exchange":"K","price":166.25,"size":10.0,"id":167,"conditions":["@","T","I"],"tape":"C"}
